@@ -7,20 +7,21 @@ import userService from "../service/userService"
 const handleHome = (req, res) => {
     return res.render("home.ejs")
 }
-const handleUse = (req, res) => {
-    return res.render("user.ejs")
+const handleUser = async (req, res) => {
+
+    let userList = await userService.getUserlist();
+    return res.render("user.ejs", { userList })
 }
 const handleCreateNewUser = (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
     let username = req.body.username;
 
-    // userService.createNewUser(email, password, username)
+    userService.createNewUser(email, password, username)
 
-    userService.getUserlist();
     return res.send("handleCreateNewUser")
 }
 
 module.exports = {
-    handleHome, handleUse, handleCreateNewUser
+    handleHome, handleUser, handleCreateNewUser
 }
