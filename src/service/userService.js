@@ -13,16 +13,22 @@ const hashPassword = (password, salt) => {
     let hashPassword = bcrypt.hashSync(password, salt);
     return hashPassword;
 }
-const createNewUser = (email, password, username) => {
+const createNewUser = async (email, password, username) => {
     let hashPass = hashPassword(password);
-    connection.query(
-        'INSERT INTO users (email,password,username) VALUES (?,?,?)', [email, hashPass, username],
-        function (err, results, fields) {
-            if (err) {
-                console.log(err)
-            }
-        }
-    );
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        database: 'jwt',
+        Promise: bluebird,
+    });
+    try {
+        const [rows, fields] = await connection.execute('INSERT INTO users (email,password,username) VALUES (?,?,?)',
+            [email, hashPass, username]);
+    } catch (e) {
+        console.log(e)
+    }
+
+
 }
 const getUserlist = async () => {
     const connection = await mysql.createConnection({
@@ -31,18 +37,6 @@ const getUserlist = async () => {
         database: 'jwt',
         Promise: bluebird,
     });
-    let user = [];
-    // connection.query(
-    //     'SELECT * FROM users ',
-    //     function (err, results, fields) {
-    //         if (err) {
-    //             console.log(err)
-    //             return user;
-    //         }
-    //         user = results
-    //         return user;
-    //     }
-    // );
     try {
         const [rows, fields] = await connection.execute('SELECT * FROM users');
         return rows;
@@ -51,7 +45,21 @@ const getUserlist = async () => {
     }
 
 }
+const deleteUser = async (id) => {
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        database: 'jwt',
+        Promise: bluebird,
+    });
+    try {
+        const [rows, fields] = await connection.execute('DELETE FROM users WHERE id=?', [id]);
+        return rows;
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 module.exports = {
-    createNewUser, getUserlist
+    createNewUser, getUserlist, deleteUser
 }
