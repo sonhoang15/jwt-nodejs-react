@@ -32,10 +32,7 @@ const handleUpdateUser = async (req, res) => {
     let id = req.params.id;
     let user = await userService.editUser(id)
     let data = {};
-    if (user && user.length > 0) {
-        data = user[0]
-    }
-
+    data = user;
     return res.render("user-update.ejs", { data })
 }
 const fillUpdateUser = async (req, res) => {

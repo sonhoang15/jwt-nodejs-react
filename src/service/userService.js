@@ -3,6 +3,7 @@ import e from 'express';
 import mysql from 'mysql2/promise';
 import bluebird from 'bluebird';
 import db from '../models/index';
+import { where } from 'sequelize/lib/sequelize';
 
 // create the connection, specify bluebird as Promise
 
@@ -28,61 +29,31 @@ const createNewUser = async (email, password, username) => {
 
 }
 const getUserlist = async () => {
-    const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'jwt',
-        Promise: bluebird,
-    });
-    try {
-        const [rows, fields] = await connection.execute('SELECT * FROM users');
-        return rows;
-    } catch (error) {
-        console.log(error)
-    }
+    let users = [];
+    users = await db.User.findAll();
+    return users;
 
 }
 const deleteUser = async (id) => {
-    const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'jwt',
-        Promise: bluebird,
-    });
-    try {
-        const [rows, fields] = await connection.execute('DELETE FROM users WHERE id=?', [id]);
-        return rows;
-    } catch (error) {
-        console.log(error)
-    }
+    await db.User.destroy({
+        where: { id: id }
+    })
 }
 const editUser = async (id) => {
-    const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'jwt',
-        Promise: bluebird,
-    });
-    try {
-        const [rows, fields] = await connection.execute('select * FROM users WHERE id=?', [id]);
-        return rows;
-    } catch (error) {
-        console.log(error)
-    }
+    let user = {};
+    user = await db.User.findOne({
+        where: { id: id }
+    })
+    return user.get({ plain: true })
 }
 const updateUserInfor = async (email, username, id) => {
-    const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'jwt',
-        Promise: bluebird,
-    });
-    try {
-        const [rows, fields] = await connection.execute('UPDATE users SET username = ?  ,email = ? WHERE id= ? ', [username, email, id]);
-        return rows;
-    } catch (error) {
-        console.log(error)
+    await db.User.update({
+        email: email,
+        username: username
+    }, {
+        where: { id: id }
     }
+    )
 }
 module.exports = {
     createNewUser, getUserlist, deleteUser, editUser, updateUserInfor
