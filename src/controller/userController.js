@@ -31,8 +31,25 @@ const handleRegister = async (req, res) => {
             DT: {}
         });
     }
-    // return res.render("register.ejs");
+}
+
+const handleLogin = async (req, res) => {
+    try {
+        let data = await crudService.handleUserLogin(req.body);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT
+        });
+    } catch (error) {
+        console.error("Error in handleLogin:", error);
+        return res.status(500).json({
+            EM: "err Server Error",
+            EC: -1,
+            DT: {}
+        });
+    }
 }
 module.exports = {
-    handleRegister
+    handleRegister, handleLogin
 }

@@ -1,5 +1,6 @@
 import db from "../models"
 import bcrypt from 'bcryptjs';
+import { Op } from 'sequelize';
 const salt = bcrypt.genSaltSync(10);
 
 const hashPassword = (password, salt) => {
@@ -8,28 +9,20 @@ const hashPassword = (password, salt) => {
 }
 
 const checkEmail = async (userEmail) => {
-    let exists = await db.User.findOne({
+    let user = await db.User.findOne({
         where: { email: userEmail }
     });
-    if (exists) {
-        return {
-            EM: "Email already exists",
-            EC: 1,
-            DT: {}
-        };
+    if (user) {
+        return true
     }
     return false;
 }
 const checkPhone = async (userPhone) => {
-    let exists = await db.User.findOne({
+    let user = await db.User.findOne({
         where: { phone: userPhone }
     });
-    if (exists) {
-        return {
-            EM: "Phone already exists",
-            EC: 1,
-            DT: {}
-        };
+    if (user) {
+        return true
     }
     return false;
 }
@@ -75,6 +68,46 @@ const registerNewUser = async (userData) => {
     }
 
 }
+
+const checkPassword = (password, hashPassword) => {
+    return bcrypt.compareSync(password, hashPassword);
+}
+const handleUserLogin = async (data) => {
+
+    try {
+        let user = await db.User.findOne({
+            where: {
+                [Op.or]: [
+                    { email: data.valueLogin },
+                    { phone: data.valueLogin }
+                ]
+            }
+        });
+        if (user) {
+            let isPasswordValid = checkPassword(data.password, user.password);
+            if (isPasswordValid === true) {
+                return {
+                    EM: "Login successful",
+                    EC: 0,
+                    DT: {}
+                }
+            }
+        }
+        return {
+            EM: "Email/phone or password does not exist",
+            EC: 1,
+            DT: {}
+        }
+    } catch (error) {
+        console.error("Error in handleUserLogin:", error);
+        return {
+            EM: "Server error",
+            EC: -2,
+            DT: {}
+        };
+    }
+}
+
 module.exports = {
-    registerNewUser
+    registerNewUser, handleUserLogin
 }
