@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Group',
+        tableName: 'group',
     });
     return Group;
 };
