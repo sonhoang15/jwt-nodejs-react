@@ -33,7 +33,12 @@ const read = async (req, res) => {
 }
 const create = async (req, res) => {
     try {
-
+        let data = await userApiService.createUser(req.body);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT
+        });
     } catch (error) {
         console.error("Error creating user:", error);
         return res.status(500).json({

@@ -80,7 +80,12 @@ const getAllUsersWithPagination = async (page, limit) => {
 
 const createUser = async (userData) => {
     try {
-        await db.User.create({});
+        await db.User.create(userData);
+        return {
+            EM: "ok fetching users",
+            EC: 0,
+            DT: []
+        };
 
     } catch (error) {
         console.error("Error creating user:", error);
