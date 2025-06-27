@@ -1,5 +1,6 @@
 import { raw } from "body-parser";
 import db from "../models";
+import { checkEmail, checkPhone, hashPassword } from "./crudService"
 
 const getAllUsers = async () => {
 
@@ -48,13 +49,14 @@ const getAllUsersWithPagination = async (page, limit) => {
         const { count, rows } = await db.User.findAndCountAll({
             offset: offset,
             limit: limit,
-            attributes: ["id", "email", "username", "phone", "sex"],
+            attributes: ["id", "email", "username", "phone", "sex", "address"],
             include: [
                 {
                     model: db.Group,
-                    attributes: ["name", "description"] // Include role name
+                    attributes: ["name", "description", "id"] // Include role name
                 },
             ],
+            order: [['id', 'DESC']]
         })
         let totalPage = Math.ceil(count / limit);
         let data = {
@@ -80,7 +82,24 @@ const getAllUsersWithPagination = async (page, limit) => {
 
 const createUser = async (userData) => {
     try {
-        await db.User.create(userData);
+        let isEmailExists = await checkEmail(userData.email);
+        if (isEmailExists === true) {
+            return {
+                EM: "Email already exists",
+                EC: 1,
+                DT: 'email'
+            };
+        }
+        let isPhoneExists = await checkPhone(userData.phone);
+        if (isPhoneExists === true) {
+            return {
+                EM: "Phone already exists",
+                EC: 1,
+                DT: 'phone'
+            };
+        }
+        let hashPass = hashPassword(userData.password);
+        await db.User.create({ ...userData, password: hashPass });
         return {
             EM: "ok fetching users",
             EC: 0,
@@ -98,9 +117,37 @@ const createUser = async (userData) => {
     }
 
 }
-const updateUser = async (userId, userData) => {
+const updateUser = async (data) => {
     try {
-
+        if (!data.groupId) {
+            return {
+                EM: "Error group emty",
+                EC: 1,
+                DT: 'group'
+            }
+        }
+        let user = await db.User.findOne({
+            where: { id: data.id }
+        });
+        if (user) {
+            await user.update({
+                username: data.username,
+                address: data.address,
+                sex: data.sex,
+                groupId: data.groupId
+            })
+            return {
+                EM: "Update users successfully",
+                EC: 0,
+                DT: user
+            };
+        } else {
+            return {
+                EM: "user not found",
+                EC: 2,
+                DT: ''
+            }
+        }
     } catch (error) {
         console.error("Error updating user:", error);
         return {

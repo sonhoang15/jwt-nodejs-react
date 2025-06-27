@@ -109,5 +109,5 @@ const handleUserLogin = async (data) => {
 }
 
 module.exports = {
-    registerNewUser, handleUserLogin
+    registerNewUser, handleUserLogin, hashPassword, checkEmail, checkPhone
 }

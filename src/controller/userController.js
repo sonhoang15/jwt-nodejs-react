@@ -51,14 +51,20 @@ const create = async (req, res) => {
 }
 const update = async (req, res) => {
     try {
-
+        let data = await userApiService.updateUser(req.body);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT
+        });
     } catch (error) {
-        console.error("Error updating user:", error);
+        console.error("Error creating user:", error);
         return res.status(500).json({
             EM: "err Server Error",
             EC: -1,
             DT: {}
         });
+
     }
 }
 const DeleteUser = async (req, res) => {
