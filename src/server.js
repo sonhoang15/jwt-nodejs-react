@@ -6,6 +6,7 @@ import initApiRoutes from "./routes/api";
 import configcors from "./config/cors";
 // import connection from "./config/connectDB"
 require("dotenv").config();
+import { createJWT } from "./middleware/JWTAction"
 
 
 const app = express();
@@ -14,6 +15,8 @@ configViewEngine(app);
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
+
+createJWT();
 
 // connection();
 configcors(app);
