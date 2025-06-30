@@ -86,16 +86,16 @@ const DeleteUser = async (req, res) => {
 }
 const getUserAccount = async (req, res) => {
     console.log("check uể", req.user)
-    // return res.status(200).json({
-    //     EM: "okeeeee",
-    //     EC: 0,
-    //     DT: {
-    //         access_token: req.token,
-    //         groupWithRoles: req.user.groupWithRoles,
-    //         email: req.user.email,
-    //         username: req.user.username
-    //     }
-    // });
+    return res.status(200).json({
+        EM: "okeeeee",
+        EC: 0,
+        DT: {
+            access_token: req.token,
+            groupWithRoles: req.user.groupWithRoles,
+            email: req.user.email,
+            username: req.user.username
+        }
+    });
 }
 module.exports = {
     read, create, update, DeleteUser, getUserAccount
