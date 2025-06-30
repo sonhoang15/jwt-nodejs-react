@@ -1,7 +1,7 @@
 require("dotenv").config();
 import jwt from 'jsonwebtoken';
 
-const nonSecurePaths = ['/v1/api/', '/v1/api/login', '/v1/api/register'];
+const nonSecurePaths = ['/v1/api/', '/v1/api/login', '/v1/api/register', '/v1/api/logout'];
 
 const createJWT = (payload) => {
     let key = process.env.JWT_KEY
@@ -24,7 +24,7 @@ const verifyToken = (token) => {
         decoded = jwt.verify(token, key)
 
     } catch (error) {
-        console.log(err);
+        console.log(error);
     }
     return decoded;
 }
