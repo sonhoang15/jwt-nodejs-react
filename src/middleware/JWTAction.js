@@ -1,11 +1,15 @@
 require("dotenv").config();
 import jwt from 'jsonwebtoken';
 
+const nonSecurePaths = ['/v1/api/', '/v1/api/login', '/v1/api/register'];
+
 const createJWT = (payload) => {
     let key = process.env.JWT_KEY
     let token = null
     try {
-        token = jwt.sign(payload, key);
+        token = jwt.sign(payload, key, {
+            expiresIn: process.env.JWT_EXPIRES_IN
+        })
     } catch (error) {
         console.log(error)
     }
@@ -22,42 +26,47 @@ const verifyToken = (token) => {
     } catch (error) {
         console.log(err);
     }
-    return data;
+    return decoded;
 }
 
 const checkUserJWT = (req, res, next) => {
-    let cookie = req.cookie;
-    if (cookie && cookie.jwt) {
-        let token = cookie.jwt
+    if (nonSecurePaths.includes(req.path)) {
+        return next();
+    }
+    let cookies = req.cookies;
+
+    if (cookies && cookies.jwt) {
+        let token = cookies.jwt;
         let decoded = verifyToken(token)
         if (decoded) {
-            req.user = decoded
+            req.user = decoded;
+            req.token = token
             next();
         } else {
-            return res.status(401), json({
+            return res.status(401).json({
                 EC: -1,
                 DT: '',
-                EM: 'not authenticated the user'
+                EM: 'not authenticated the user 2'
             })
         }
-
     } else {
-        return res.status(401), json({
+        return res.status(401).json({
             EC: -1,
             DT: '',
-            EM: 'not authenticated the user'
+            EM: 'not authenticated the user 3'
         })
     }
 
 }
 
 const checkUserPermission = (req, res, next) => {
+    if (nonSecurePaths.includes(req.path) || req.path === '/account') return next();
     if (req.user) {
         let email = req.user.email
         let roles = req.user.groupWithRoles.Roles
         let currentUrl = req.path
         if (!roles || roles.length === 0) {
-            return res.status(403), json({
+            return res.status(403).json({
                 EC: -1,
                 DT: '',
                 EM: `you don't permission to access this resource ...`
@@ -67,17 +76,17 @@ const checkUserPermission = (req, res, next) => {
         if (canAccess === true) {
             next()
         } else {
-            return res.status(403), json({
+            return res.status(403).json({
                 EC: -1,
                 DT: '',
                 EM: `you don't permission to access this resource ...`
             })
         }
     } else {
-        return res.status(401), json({
+        return res.status(401).json({
             EC: -1,
             DT: '',
-            EM: 'not authenticated the user'
+            EM: 'not authenticated the user 1'
         })
     }
 }

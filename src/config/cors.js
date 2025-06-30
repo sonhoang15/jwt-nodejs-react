@@ -1,25 +1,25 @@
 require("dotenv").config();
 
-
 const configcors = (app) => {
-    app.use(function (req, res, next) {
+    app.use((req, res, next) => {
+        const allowedOrigins = [process.env.REACT_URL || 'http://localhost:3000'];
+        const origin = req.headers.origin;
 
-        // Website you wish to allow to connect
-        res.setHeader('Access-Control-Allow-Origin', process.env.REACT_URL || 'http://localhost:3000'
-        );
+        if (allowedOrigins.includes(origin)) {
+            res.setHeader('Access-Control-Allow-Origin', origin);
+        }
 
-        // Request methods you wish to allow
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-        // Request headers you wish to allow
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        // ✅ Xử lý preflight request
+        if (req.method === 'OPTIONS') {
+            return res.sendStatus(204); // No Content
+        }
 
-        // Set to true if you need the website to include cookies in the requests sent
-        // to the API (e.g. in case you use sessions)
-        res.setHeader('Access-Control-Allow-Credentials', true);
-
-        // Pass to next layer of middleware
         next();
     });
-}
+};
+
 export default configcors;

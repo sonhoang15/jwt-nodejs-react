@@ -7,9 +7,19 @@ import configcors from "./config/cors";
 import cookieParser from 'cookie-parser'
 // import connection from "./config/connectDB"
 require("dotenv").config();
-
-
 const app = express();
+const PORT = process.env.PORT || 8080;
+
+
+// app.use(cors({
+//     origin: 'http://localhost:3000', // chỉ cho phép từ origin này
+//     methods: ['GET', 'POST', 'OPTIONS'],
+//     credentials: true
+// }));
+
+
+// connection();
+configcors(app);
 
 configViewEngine(app);
 
@@ -19,8 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser())
 
-// connection();
-configcors(app);
+
 
 initWebRoutes(app);
 initApiRoutes(app);
@@ -31,7 +40,7 @@ app.use((req, res) => {
 })
 
 
-const PORT = process.env.PORT || 8080;
+
 app.listen(PORT, () => {
     console.log("backend runing " + PORT)
 })
