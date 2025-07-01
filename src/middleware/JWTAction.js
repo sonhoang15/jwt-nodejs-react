@@ -76,9 +76,9 @@ const checkUserPermission = (req, res, next) => {
         let email = req.user.email
         let roles = req.user.groupWithRoles.Roles
         let currentUrl = normalizeUrl(req.path)
-        console.log("🌐 Route req.path       :", req.path);
-        console.log("🛠️ Normalized path      :", currentUrl);
-        console.log("🔐 Roles of user        :", roles.map(r => r.url));
+        // console.log("🌐 Route req.path       :", req.path);
+        // console.log("🛠️ Normalized path      :", currentUrl);
+        // console.log("🔐 Roles of user        :", roles.map(r => r.url));
         if (!roles || roles.length === 0) {
             return res.status(403).json({
                 EC: -1,
