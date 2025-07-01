@@ -6,9 +6,6 @@ import { checkUserJWT, checkUserPermission } from "../middleware/JWTAction"
 import roleController from "../controller/roleController"
 const router = express.Router();
 
-// const checkUserLogin = (req, res, next) => {
-
-// }
 
 
 const initApiRoutes = (app) => {
@@ -28,7 +25,7 @@ const initApiRoutes = (app) => {
     router.get("/role/read", roleController.read);
     router.post("/role/create", roleController.create);
     router.put("/role/update", roleController.update);
-    router.delete("/role/delete", roleController.DeleteUser);
+    router.delete("/role/delete", roleController.deleteRoles);
 
 
     router.get("/group/read", groupController.read);

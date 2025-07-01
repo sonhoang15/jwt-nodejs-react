@@ -1,5 +1,25 @@
 import db from "../models"
 
+const getAllRoles = async () => {
+    try {
+        let data = await db.Role.findAll({ order: [['id', 'DESC']] })
+
+        return {
+            EM: `Get all role succeeds`,
+            EC: 0,
+            DT: data
+        };
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return {
+            EM: "Error create role",
+            EC: -1,
+            DT: {}
+        };
+
+    }
+}
+
 const createNewRoles = async (roles) => {
     try {
         let currentRoles = await db.Role.findAll({
@@ -34,6 +54,28 @@ const createNewRoles = async (roles) => {
     }
 }
 
+const deleteRole = async (id) => {
+    try {
+        let data = await db.Role.findOne({
+            where: { id: id }
+        })
+        await data.destroy();
+        return {
+            EM: `Delete role succeeds`,
+            EC: 0,
+            DT: {}
+        };
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return {
+            EM: "Error Delete role",
+            EC: -1,
+            DT: {}
+        };
+
+    }
+}
+
 module.exports = {
-    createNewRoles
+    createNewRoles, getAllRoles, deleteRole
 }
