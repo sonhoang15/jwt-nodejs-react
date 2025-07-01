@@ -1,5 +1,5 @@
+import roleApiService from '../service/roleApiService.js'
 import userApiService from '../service/userApiService.js'
-
 
 const read = async (req, res) => {
 
@@ -33,7 +33,7 @@ const read = async (req, res) => {
 }
 const create = async (req, res) => {
     try {
-        let data = await userApiService.createUser(req.body);
+        let data = await roleApiService.createNewRoles(req.body);
         return res.status(200).json({
             EM: data.EM,
             EC: data.EC,
@@ -84,18 +84,7 @@ const DeleteUser = async (req, res) => {
         });
     }
 }
-const getUserAccount = async (req, res) => {
-    return res.status(200).json({
-        EM: "okeeeee",
-        EC: 0,
-        DT: {
-            access_token: req.token,
-            groupWithRoles: req.user.groupWithRoles,
-            email: req.user.email,
-            username: req.user.username
-        }
-    });
-}
+
 module.exports = {
-    read, create, update, DeleteUser, getUserAccount
+    read, create, update, DeleteUser,
 }

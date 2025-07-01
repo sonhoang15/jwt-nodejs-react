@@ -36,8 +36,6 @@ const handleRegister = async (req, res) => {
 const handleLogin = async (req, res) => {
     try {
         let data = await crudService.handleUserLogin(req.body);
-        console.log("Login result:", data);
-        // res.cookie("jwt", data.DT.access_token, { httpOnly: true })
         if (data && data.DT && data.DT.access_token) {
             res.cookie("jwt", data.DT.access_token, {
                 httpOnly: true,
