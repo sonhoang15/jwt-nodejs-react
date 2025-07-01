@@ -72,7 +72,25 @@ const deleteRoles = async (req, res) => {
         });
     }
 }
+const getRolesByGroup = async (req, res) => {
+    try {
+        let id = req.params.groupId
+        let data = await roleApiService.getRolesByGroup(id);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT
+        });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return res.status(500).json({
+            EM: "err Server Error",
+            EC: -1,
+            DT: {}
+        });
+    }
+}
 
 module.exports = {
-    read, create, update, deleteRoles,
+    read, create, update, deleteRoles, getRolesByGroup
 }
