@@ -19,7 +19,33 @@ const getAllRoles = async () => {
 
     }
 }
+const getAllRoleWithPagination = async (page, limit) => {
+    try {
+        const { count, rows } = await db.Role.findAndCountAll({
+            offset: offset,
+            limit: limit,
+            order: [['id', 'DESC']]
+        })
+        let data = {
+            totalRows: count,
+            totalPage: totalPage,
+            roles: rows
+        }
+        return {
+            EM: "ok fetching role",
+            EC: 0,
+            DT: data
+        };
+    } catch (error) {
+        console.error("Error fetching role:", error);
+        return {
+            EM: "Error fetching role",
+            EC: -1,
+            DT: []
+        };
 
+    }
+}
 const createNewRoles = async (roles) => {
     try {
         let currentRoles = await db.Role.findAll({
@@ -80,7 +106,7 @@ const getRolesByGroup = async (id) => {
             return {
                 EM: `not found any roles`,
                 EC: 0,
-                DT: {}
+                DT: []
             };
         }
 
@@ -99,11 +125,11 @@ const getRolesByGroup = async (id) => {
             DT: roles
         };
     } catch (error) {
-        console.error("Error deleting user:", error);
+        console.error("Error fetching roles by group:", error);
         return {
             EM: "Error Delete role",
             EC: -1,
-            DT: {}
+            DT: []
         };
 
     }
@@ -120,7 +146,7 @@ const assignToGroup = async (data) => {
             DT: []
         };
     } catch (error) {
-        console.error("Error deleting user:", error);
+        console.error("Error fetching roles by group:", error);
         return {
             EM: "Error assign role to group ",
             EC: -1,
@@ -131,5 +157,5 @@ const assignToGroup = async (data) => {
 }
 
 module.exports = {
-    createNewRoles, getAllRoles, deleteRole, getRolesByGroup, assignToGroup
+    createNewRoles, getAllRoles, deleteRole, getRolesByGroup, assignToGroup, getAllRoleWithPagination
 }
