@@ -29,7 +29,6 @@ const createNewRoles = async (roles) => {
         const presists = roles.filter(({ url: url1 }) =>
             !currentRoles.some(({ url: url2 }) => url1 === url2
             ))
-        console.log('check persists', presists)
         if (presists.length === 0) {
             return {
                 EM: "Nothing to create ...",
