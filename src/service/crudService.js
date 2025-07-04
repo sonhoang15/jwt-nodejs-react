@@ -81,14 +81,20 @@ const checkPassword = (password, hashPassword) => {
 const handleUserLogin = async (data) => {
 
     try {
-        let user = await db.User.findOne({
-            where: {
-                [Op.or]: [
-                    { email: data.valueLogin },
-                    { phone: data.valueLogin }
-                ]
-            }
-        });
+        let user;
+        try {
+            user = await db.User.findOne({
+                where: {
+                    [Op.or]: [
+                        { email: data.valueLogin },
+                        { phone: data.valueLogin }
+                    ]
+                }
+            });
+        } catch (err) {
+            console.error("❌ DB findOne error:", err.message);
+            throw err; // Cho rơi vào catch chính
+        }
         if (user) {
             let isPasswordValid = checkPassword(data.password, user.password);
             if (isPasswordValid === true) {
@@ -119,7 +125,7 @@ const handleUserLogin = async (data) => {
     } catch (error) {
         console.error("Error in handleUserLogin:", error);
         return {
-            EM: "Server error",
+            EM: "Internal server error",
             EC: -2,
             DT: {}
         };
