@@ -54,6 +54,8 @@ const registerNewUser = async (userData) => {
             email: userData.email,
             password: hashPass,
             phone: userData.phone,
+            address: userData.address,
+            sex: userData.sex,
             username: userData.username,
             groupId: 4
         });

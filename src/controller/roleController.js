@@ -51,7 +51,7 @@ const create = async (req, res) => {
 }
 const update = async (req, res) => {
     try {
-        let data = await userApiService.updateUser(req.body);
+        let data = await roleApiService.updateRole(req.body);
         return res.status(200).json({
             EM: data.EM,
             EC: data.EC,

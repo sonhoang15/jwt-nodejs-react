@@ -78,6 +78,45 @@ const createNewRoles = async (roles) => {
 
     }
 }
+const updateRole = async (data) => {
+    try {
+        if (!data.url) {
+            return {
+                EM: "Error url emty",
+                EC: 1,
+                DT: 'url'
+            }
+        }
+        let role = await db.Role.findOne({
+            where: { id: data.id }
+        });
+        if (role) {
+            await role.update({
+                url: data.url,
+                description: data.description,
+            })
+            return {
+                EM: "Update role successfully",
+                EC: 0,
+                DT: role
+            };
+        } else {
+            return {
+                EM: "role not found",
+                EC: 2,
+                DT: ''
+            }
+        }
+    } catch (error) {
+        console.error("Error updating role:", error);
+        return {
+            EM: "Error updating roles",
+            EC: -1,
+            DT: {}
+        };
+
+    }
+}
 
 const deleteRole = async (id) => {
     try {
@@ -157,5 +196,5 @@ const assignToGroup = async (data) => {
 }
 
 module.exports = {
-    createNewRoles, getAllRoles, deleteRole, getRolesByGroup, assignToGroup, getAllRoleWithPagination
+    createNewRoles, getAllRoles, deleteRole, getRolesByGroup, assignToGroup, getAllRoleWithPagination, updateRole
 }
