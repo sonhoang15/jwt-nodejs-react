@@ -1,8 +1,9 @@
 require("dotenv").config();
 
 const configcors = (app) => {
+    const allowedOrigins = [process.env.REACT_URL || 'http://localhost:3000'];
     app.use((req, res, next) => {
-        const allowedOrigins = [process.env.REACT_URL || 'http://localhost:3000'];
+
         const origin = req.headers.origin;
 
         if (allowedOrigins.includes(origin)) {
@@ -13,7 +14,7 @@ const configcors = (app) => {
         res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
         res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-        // ✅ Xử lý preflight request
+        // ✅ Xử lý preflight requestz
         if (req.method === 'OPTIONS') {
             return res.sendStatus(204); // No Content
         }
