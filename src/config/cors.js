@@ -1,7 +1,11 @@
 require("dotenv").config();
 
 const configcors = (app) => {
-    const allowedOrigins = [process.env.REACT_URL || 'http://localhost:3000'];
+    const allowedOrigins = [
+        process.env.REACT_URL || 'http://localhost:3000',
+        'https://jwt-react-hook-hoang-sns-projects.vercel.app',
+        'https://jwt-react-hook-git-master-hoang-sns-projects.vercel.app'
+    ];
     app.use((req, res, next) => {
 
         const origin = req.headers.origin;
